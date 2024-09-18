@@ -1,4 +1,4 @@
-CREATE SCHEMA IF NOT EXISTS TS securecapita;
+CREATE SCHEMA IF NOT EXISTS securecapita;
 
 SET NAMES 'UTF8MB4';
 SET TIME_ZONE = 'Europe/Vienna';
