@@ -37,27 +37,19 @@ public class UserRepositoryImpl implements UserRepository<User> {
 
     @Override
     public User create(User user) {
-        // Check the email is unique
         if(getEmailCount(user.getEmail().trim().toLowerCase()) > 0) throw new ApiException("Email already in use. Please use a different email and try again.");
-        // Save new user
         try{
             KeyHolder holder = new GeneratedKeyHolder();
             SqlParameterSource parameterSource = getSqlParameterSource(user);
             jdbcTemplate.update(INSERT_USER_QUERY, parameterSource, holder);
             user.setId(requireNonNull(holder.getKey()).longValue());
-            // Add role to the user
             roleRepository.addRoleToUser(user.getId(), ROLE_USER.name());
-            // Send verification URL
             String verificationUrl = getVerificationUrl(UUID.randomUUID().toString(), ACCOUNT.getType());
-            // Send URL in verification table
             jdbcTemplate.update(INSERT_ACCOUNT_VERIFICATION_URL_QUERY, of("userId", user.getId(), "url",verificationUrl));
-            // Send email to user with verification URL
             // emailService.sendVerificationUrl(user.getFirstName(), user.getEmail(), verificationUrl, ACCOUNT);
             user.setEnabled(false);
             user.setNotLocked(true);
-            // Return the newly created user
             return user;
-            // If any errors, throw exception with proper message
         }catch (EmptyResultDataAccessException exception){
             throw new ApiException("No role found by name: " + ROLE_USER.name());
 
