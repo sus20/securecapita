@@ -22,7 +22,7 @@ import static java.util.Objects.requireNonNull;
 @RequiredArgsConstructor
 @Slf4j
 public class RoleRepositoryImpl implements RoleRepository<Role> {
-    private final NamedParameterJdbcTemplate jdbcTemplate ;
+    private final NamedParameterJdbcTemplate jdbcTemplate;
 
     @Override
     public Role create(Role data) {
@@ -51,18 +51,16 @@ public class RoleRepositoryImpl implements RoleRepository<Role> {
 
     @Override
     public void addRoleToUser(Long userId, String roleName) {
-        log.info("Adding role {} to user id: {}", roleName,userId);
-        try{
-            Role role = jdbcTemplate.queryForObject(SELECT_ROLE_BY_NAME_QUERY, of("roleName", roleName), new RoleRowMapper());
+        log.info("Adding role {} to user id: {}", roleName, userId);
+        try {
+            Role role = jdbcTemplate.queryForObject(SELECT_ROLE_BY_NAME_QUERY, of("name", roleName), new RoleRowMapper());
             jdbcTemplate.update(INSERT_ROLE_TO_USER_QUERY, of("userId", userId, "roleId", requireNonNull(role).getId()));
-
-        }catch (EmptyResultDataAccessException exception){
+        } catch (EmptyResultDataAccessException exception) {
             throw new ApiException("No role found by name: " + ROLE_USER.name());
-
-        } catch (Exception exception){
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
             throw new ApiException("An error occurred. Please try again.");
         }
-
     }
 
     @Override
