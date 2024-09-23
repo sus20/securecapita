@@ -29,7 +29,7 @@ public class UserResource {
     @PostMapping("/register")
     public ResponseEntity<HttpResponse> saveUser(@RequestBody @Valid User user){
         UserDTO userDTO = userService.createUser(user);
-        return ResponseEntity.created(null).body(
+        return ResponseEntity.created(getUri()).body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
                         .data(of("user", userDTO))
