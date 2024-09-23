@@ -35,20 +35,22 @@ public class UserRepositoryImpl implements UserRepository<User> {
 
     @Override
     public User create(User user) {
-        if(getEmailCount(user.getEmail().trim().toLowerCase()) > 0) throw new ApiException("Email already in use. Please use a different email and try again.");
-        try{
+        if (getEmailCount(user.getEmail().trim().toLowerCase()) > 0)
+            throw new ApiException("Email already in use. Please use a different email and try again.");
+        try {
             KeyHolder holder = new GeneratedKeyHolder();
             SqlParameterSource parameterSource = getSqlParameterSource(user);
             jdbcTemplate.update(INSERT_USER_QUERY, parameterSource, holder);
             user.setId(requireNonNull(holder.getKey()).longValue());
             roleRepository.addRoleToUser(user.getId(), ROLE_USER.name());
             String verificationUrl = getVerificationUrl(UUID.randomUUID().toString(), ACCOUNT.getType());
-            jdbcTemplate.update(INSERT_ACCOUNT_VERIFICATION_URL_QUERY, of("userId", user.getId(), "url",verificationUrl));
+            jdbcTemplate.update(INSERT_ACCOUNT_VERIFICATION_URL_QUERY, of("userId", user.getId(), "url", verificationUrl));
             // emailService.sendVerificationUrl(user.getFirstName(), user.getEmail(), verificationUrl, ACCOUNT);
             user.setEnabled(false);
             user.setNotLocked(true);
             return user;
-        } catch (Exception exception){
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
             throw new ApiException("An error occurred. Please try again.");
         }
     }
