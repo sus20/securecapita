@@ -6,7 +6,16 @@ SET TIME_ZONE = '+2:00';
 
 USE securecapita;
 
+DROP TABLE IF EXISTS ResetPasswordVerifications;
+DROP TABLE IF EXISTS TwoFactorVerifications;
+DROP TABLE IF EXISTS AccountVerifications;
+DROP TABLE IF EXISTS UserEvents;
+DROP TABLE IF EXISTS UserRoles;
+
 DROP TABLE IF EXISTS Users;
+DROP TABLE IF EXISTS Roles;
+DROP TABLE IF EXISTS Events;
+
 
 CREATE TABLE Users
 (
@@ -27,7 +36,6 @@ CREATE TABLE Users
     CONSTRAINT UQ_Users_Email UNIQUE (email)
 );
 
-DROP TABLE IF EXISTS Roles;
 
 CREATE TABLE Roles
 (
@@ -38,7 +46,6 @@ CREATE TABLE Roles
 
 );
 
-DROP TABLE IF EXISTS UserRoles;
 
 CREATE TABLE UserRoles
 (
@@ -50,7 +57,6 @@ CREATE TABLE UserRoles
     CONSTRAINT UQ_UserRoles_User_Id UNIQUE (user_id)
 );
 
-DROP TABLE IF EXISTS Events;
 
 CREATE TABLE Events
 (
@@ -63,7 +69,6 @@ CREATE TABLE Events
     CONSTRAINT UQ_Events_Type UNIQUE (type)
 );
 
-DROP TABLE IF EXISTS UserEvents;
 
 CREATE TABLE UserEvents
 (
@@ -77,7 +82,7 @@ CREATE TABLE UserEvents
     FOREIGN KEY (event_id) REFERENCES Events (id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
-DROP TABLE IF EXISTS AccountVerifications;
+
 
 CREATE TABLE AccountVerifications
 (
@@ -90,7 +95,7 @@ CREATE TABLE AccountVerifications
     CONSTRAINT UQ_AccountVerifications_Url UNIQUE (url)
 );
 
-DROP TABLE IF EXISTS ResetPasswordVerifications;
+
 
 CREATE TABLE ResetPasswordVerifications
 (
@@ -103,7 +108,7 @@ CREATE TABLE ResetPasswordVerifications
     CONSTRAINT UQ_ResetPasswordVerifications_Url UNIQUE (url)
 );
 
-DROP TABLE IF EXISTS TwoFactorVerifications;
+
 
 CREATE TABLE TwoFactorVerifications
 (
