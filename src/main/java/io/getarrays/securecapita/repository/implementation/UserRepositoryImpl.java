@@ -7,7 +7,6 @@ import io.getarrays.securecapita.repository.RoleRepository;
 import io.getarrays.securecapita.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.UUID;
 
 import static io.getarrays.securecapita.enumeration.RoleType.ROLE_USER;
@@ -50,9 +48,6 @@ public class UserRepositoryImpl implements UserRepository<User> {
             user.setEnabled(false);
             user.setNotLocked(true);
             return user;
-        }catch (EmptyResultDataAccessException exception){
-            throw new ApiException("No role found by name: " + ROLE_USER.name());
-
         } catch (Exception exception){
             throw new ApiException("An error occurred. Please try again.");
         }
